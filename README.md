@@ -27,7 +27,7 @@ At least one of those 3 options should be provided.
 
 Run manually from Docker Hub:
 ```
-docker run -d --restart=always -p 9171:9171 -e REPOS="infinityworks/ranch-eye, infinityworks/prom-conf" infinityworks/github-exporter
+docker run -d --restart=always -p 9171:9171 -e REPOS="infinityworks/ranch-eye, infinityworks/prom-conf" alexellis/github-exporter
 ```
 
 Build a docker image:
@@ -46,7 +46,7 @@ github-exporter:
       - 9171
     ports:
       - 9171:9171
-    image: infinityworks/github-exporter:latest
+    image: alexellis/github-exporter:latest
     environment:
       - REPOS=<REPOS you want to monitor>
       - GITHUB_TOKEN=<your github api token>
@@ -59,4 +59,4 @@ Metrics will be made available on port 9171 by default
 An example of these metrics can be found in the `METRICS.md` markdown file in the root of this repository
 
 ## Metadata
-[![](https://images.microbadger.com/badges/image/infinityworks/github-exporter.svg)](http://microbadger.com/images/infinityworks/github-exporter "Get your own image badge on microbadger.com") [![](https://images.microbadger.com/badges/version/infinityworks/github-exporter.svg)](http://microbadger.com/images/infinityworks/github-exporter "Get your own version badge on microbadger.com")
+[![](https://images.microbadger.com/badges/image/alexellis/github-exporter.svg)](http://microbadger.com/images/alexellis/github-exporter "Get your own image badge on microbadger.com") [![](https://images.microbadger.com/badges/version/alexellis/github-exporter.svg)](http://microbadger.com/images/alexellis/github-exporter "Get your own version badge on microbadger.com")

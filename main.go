@@ -3,9 +3,9 @@ package main
 import (
 	"net/http"
 
+	conf "github.com/alexellis/github-exporter/config"
+	"github.com/alexellis/github-exporter/exporter"
 	"github.com/fatih/structs"
-	conf "github.com/infinityworks/github-exporter/config"
-	"github.com/infinityworks/github-exporter/exporter"
 	"github.com/infinityworks/go-common/logger"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/sirupsen/logrus"
@@ -43,7 +43,7 @@ func main() {
 		                <head><title>Github Exporter</title></head>
 		                <body>
 		                   <h1>GitHub Prometheus Metrics Exporter</h1>
-						   <p>For more information, visit <a href=https://github.com/infinityworks/github-exporter>GitHub</a></p>
+						   <p>For more information, visit <a href=https://github.com/alexellis/github-exporter>GitHub</a></p>
 		                   <p><a href='` + applicationCfg.MetricsPath() + `'>Metrics</a></p>
 		                   </body>
 		                </html>
