@@ -1,9 +1,12 @@
 package exporter
 
-import "github.com/prometheus/client_golang/prometheus"
-import "strconv"
+import (
+	"strconv"
 
-// AddMetrics - Add's all of the metrics to a map of strings, returns the map.
+	"github.com/prometheus/client_golang/prometheus"
+)
+
+// AddMetrics registers metrics to a map of strings
 func AddMetrics() map[string]*prometheus.Desc {
 
 	APIMetrics := make(map[string]*prometheus.Desc)

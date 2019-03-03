@@ -57,13 +57,13 @@ func Init() Config {
 	return appConfig
 }
 
-// Init populates the Config struct based on environmental runtime configuration
+// getScrapeURLs populates the Config struct based on environmental runtime configuration
 // All URL's are added to the TargetURL's string array
 func getScrapeURLs(apiURL, repos, orgs, users string) ([]string, error) {
 
 	urls := []string{}
 
-	opts := "?&per_page=100" // Used to set the Github API to return 100 results per page (max)
+	opts := "?&per_page=100" // Used to set the GitHub API to return 100 results per page (max)
 
 	// User input validation, check that either repositories or organisations have been passed in
 	if len(repos) == 0 && len(orgs) == 0 && len(users) == 0 {
@@ -79,7 +79,7 @@ func getScrapeURLs(apiURL, repos, orgs, users string) ([]string, error) {
 		}
 	}
 
-	// Append github orginisations to the array
+	// Append GitHub organizations to the array
 	if orgs != "" {
 		o := strings.Split(orgs, ", ")
 		for _, x := range o {

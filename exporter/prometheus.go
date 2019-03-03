@@ -5,7 +5,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// Describe - loops through the API metrics and passes them to prometheus.Describe
+// Describe exposes metrics
 func (e *Exporter) Describe(ch chan<- *prometheus.Desc) {
 
 	for _, m := range e.APIMetrics {
