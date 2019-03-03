@@ -9,7 +9,8 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func asyncHTTPGets(targets []string, token string) ([]*Response, error) {
+// queryAPI queries the GitHub API asynchronously
+func queryAPI(targets []string, token string) ([]*Response, error) {
 
 	// Channels used to enable concurrent requests
 	ch := make(chan *Response, len(targets))
@@ -58,11 +59,11 @@ func getResponse(url string, token string, ch chan<- *Response) error {
 	// Read the body to a byte array so it can be used elsewhere
 	body, err := ioutil.ReadAll(resp.Body)
 
-	defer resp.Body.Close()
-
 	if err != nil {
 		return fmt.Errorf("Error converting body to byte array: %v", err)
 	}
+
+	defer resp.Body.Close()
 
 	// Triggers if a user specifies an invalid or not visible repository
 	if resp.StatusCode == 404 {

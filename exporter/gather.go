@@ -9,11 +9,11 @@ import (
 )
 
 // gatherData - Collects the data from the API and stores into struct
-func (e *Exporter) gatherData() ([]*Datum, *RateLimits, error) {
+func (e *Exporter) gatherData() ([]*RepoInfo, *RateLimits, error) {
 
-	data := []*Datum{}
+	data := []*RepoInfo{}
 
-	responses, err := asyncHTTPGets(e.TargetURLs, e.APIToken)
+	responses, err := queryAPI(e.TargetURLs, e.APIToken)
 
 	if err != nil {
 		return data, nil, err
@@ -24,11 +24,11 @@ func (e *Exporter) gatherData() ([]*Datum, *RateLimits, error) {
 		// Github can at times present an array, or an object for the same data set.
 		// This code checks handles this variation.
 		if isArray(response.body) {
-			ds := []*Datum{}
+			ds := []*RepoInfo{}
 			json.Unmarshal(response.body, &ds)
 			data = append(data, ds...)
 		} else {
-			d := new(Datum)
+			d := new(RepoInfo)
 			json.Unmarshal(response.body, &d)
 			data = append(data, d)
 		}

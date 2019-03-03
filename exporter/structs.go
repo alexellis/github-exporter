@@ -15,12 +15,10 @@ type Exporter struct {
 	config.Config
 }
 
-// Data is used to store an array of Datums.
-// This is useful for the JSON array detection
-type Data []Datum
+type Data []RepoInfo
 
-// Datum is used to store data from all the relevant endpoints in the API
-type Datum struct {
+// RepoInfo is used to store data from all the relevant endpoints in the API
+type RepoInfo struct {
 	Name  string `json:"name"`
 	Owner struct {
 		Login string `json:"login"`
