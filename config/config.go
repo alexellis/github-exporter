@@ -23,6 +23,7 @@ type Config struct {
 	APITokenFile  string
 	APIToken      string
 	TargetURLs    []string
+	TargetRepos   map[string][]string
 }
 
 // Init populates the Config struct based on environmental runtime configuration
@@ -38,6 +39,8 @@ func Init() Config {
 	token, err := getAuth(tokenEnv, tokenFile)
 	scraped, err := getScrapeURLs(url, repos, orgs, users)
 
+	targetRepos, err := buildTargetReposMap(repos, orgs, users)
+
 	if err != nil {
 		log.Errorf("Error initialising Configuration, Error: %v", err)
 	}
@@ -52,9 +55,43 @@ func Init() Config {
 		tokenFile,
 		token,
 		scraped,
+		targetRepos,
 	}
 
 	return appConfig
+}
+
+func buildTargetReposMap(repos, orgs, users string) (map[string][]string, error) {
+	repoMap := make(map[string][]string)
+
+	if len(repos) == 0 && len(orgs) == 0 && len(users) == 0 {
+		return repoMap, fmt.Errorf("No targets specified")
+	}
+
+	// if repos != "" {
+	// 	repoList := strings.Split(repos, ",")
+	// 	for _, repo := range repoList {
+	// 		repoURL := fmt.Sprintf("%s/repos/%s%s", apiURL, repo, opts)
+	// 		urls = append(urls, repoURL)
+	// 	}
+	// }
+
+	if orgs != "" {
+		orgsList := strings.Split(orgs, ",")
+		for _, org := range orgsList {
+			repoMap[org] = []string{"*"}
+		}
+	}
+
+	// if users != "" {
+	// 	us := strings.Split(users, ", ")
+	// 	for _, x := range us {
+	// 		y := fmt.Sprintf("%s/users/%s/repos%s", apiURL, x, opts)
+	// 		urls = append(urls, y)
+	// 	}
+	// }
+
+	return repoMap, nil
 }
 
 // getScrapeURLs populates the Config struct based on environmental runtime configuration
@@ -72,19 +109,19 @@ func getScrapeURLs(apiURL, repos, orgs, users string) ([]string, error) {
 
 	// Append repositories to the array
 	if repos != "" {
-		rs := strings.Split(repos, ", ")
-		for _, x := range rs {
-			y := fmt.Sprintf("%s/repos/%s%s", apiURL, x, opts)
-			urls = append(urls, y)
+		repoList := strings.Split(repos, ", ")
+		for _, repo := range repoList {
+			repoURL := fmt.Sprintf("%s/repos/%s%s", apiURL, repo, opts)
+			urls = append(urls, repoURL)
 		}
 	}
 
 	// Append GitHub organizations to the array
 	if orgs != "" {
-		o := strings.Split(orgs, ", ")
-		for _, x := range o {
-			y := fmt.Sprintf("%s/orgs/%s/repos%s", apiURL, x, opts)
-			urls = append(urls, y)
+		orgsList := strings.Split(orgs, ", ")
+		for _, org := range orgsList {
+			repoURL := fmt.Sprintf("%s/orgs/%s/repos%s", apiURL, org, opts)
+			urls = append(urls, repoURL)
 		}
 	}
 

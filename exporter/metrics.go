@@ -1,8 +1,7 @@
 package exporter
 
 import (
-	"strconv"
-
+	"github.com/google/go-github/github"
 	"github.com/prometheus/client_golang/prometheus"
 )
 
@@ -56,15 +55,15 @@ func AddMetrics() map[string]*prometheus.Desc {
 }
 
 // processMetrics - processes the response data and sets the metrics using it as a source
-func (e *Exporter) processMetrics(data []*RepoInfo, rates *RateLimits, ch chan<- prometheus.Metric) error {
+func (e *Exporter) processMetrics(data []*github.Repository, rates *RateLimits, ch chan<- prometheus.Metric) error {
 
 	// APIMetrics - range through the data slice
-	for _, x := range data {
-		ch <- prometheus.MustNewConstMetric(e.APIMetrics["Stars"], prometheus.GaugeValue, x.Stars, x.Name, x.Owner.Login, strconv.FormatBool(x.Private), strconv.FormatBool(x.Fork), strconv.FormatBool(x.Archived), x.License.Key, x.Language)
-		ch <- prometheus.MustNewConstMetric(e.APIMetrics["Forks"], prometheus.GaugeValue, x.Forks, x.Name, x.Owner.Login, strconv.FormatBool(x.Private), strconv.FormatBool(x.Fork), strconv.FormatBool(x.Archived), x.License.Key, x.Language)
-		ch <- prometheus.MustNewConstMetric(e.APIMetrics["OpenIssues"], prometheus.GaugeValue, x.OpenIssues, x.Name, x.Owner.Login, strconv.FormatBool(x.Private), strconv.FormatBool(x.Fork), strconv.FormatBool(x.Archived), x.License.Key, x.Language)
-		ch <- prometheus.MustNewConstMetric(e.APIMetrics["Watchers"], prometheus.GaugeValue, x.Watchers, x.Name, x.Owner.Login, strconv.FormatBool(x.Private), strconv.FormatBool(x.Fork), strconv.FormatBool(x.Archived), x.License.Key, x.Language)
-		ch <- prometheus.MustNewConstMetric(e.APIMetrics["Size"], prometheus.GaugeValue, x.Size, x.Name, x.Owner.Login, strconv.FormatBool(x.Private), strconv.FormatBool(x.Fork), strconv.FormatBool(x.Archived), x.License.Key, x.Language)
+	for _, r := range data {
+		ch <- prometheus.MustNewConstMetric(e.APIMetrics["Stars"], prometheus.GaugeValue, float64(*r.StargazersCount), *r.Name, *r.Owner.Login, *r.Private, *r.Fork, *r.Archived, *r.License.Key, *r.Language)
+		ch <- prometheus.MustNewConstMetric(e.APIMetrics["Forks"], prometheus.GaugeValue, float64(r.ForksCount), *r.Name, r.Owner.Login, r.Private, r.Fork, r.Archived, r.License.Key, r.Language)
+		ch <- prometheus.MustNewConstMetric(e.APIMetrics["OpenIssues"], prometheus.GaugeValue, float64(r.OpenIssues), r.Name, r.Owner.Login, r.Private, r.Fork, r.Archived, r.License.Key, r.Language)
+		ch <- prometheus.MustNewConstMetric(e.APIMetrics["Watchers"], prometheus.GaugeValue, r.Watchers, r.Name, r.Owner.Login, r.Private, r.Fork, r.Archived, r.License.Key, r.Language)
+		ch <- prometheus.MustNewConstMetric(e.APIMetrics["Size"], prometheus.GaugeValue, r.Size, r.Name, r.Owner.Login, r.Private, r.Fork, r.Archived, r.License.Key, r.Language)
 
 	}
 

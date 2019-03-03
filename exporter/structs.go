@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/alexellis/github-exporter/config"
+	"github.com/google/go-github/github"
 	"github.com/prometheus/client_golang/prometheus"
 )
 
@@ -15,27 +16,27 @@ type Exporter struct {
 	config.Config
 }
 
-type Data []RepoInfo
+type Data []*github.Repository
 
-// RepoInfo is used to store data from all the relevant endpoints in the API
-type RepoInfo struct {
-	Name  string `json:"name"`
-	Owner struct {
-		Login string `json:"login"`
-	} `json:"owner"`
-	License struct {
-		Key string `json:"key"`
-	} `json:"license"`
-	Language   string  `json:"language"`
-	Archived   bool    `json:"archived"`
-	Private    bool    `json:"private"`
-	Fork       bool    `json:"fork"`
-	Forks      float64 `json:"forks"`
-	Stars      float64 `json:"stargazers_count"`
-	OpenIssues float64 `json:"open_issues"`
-	Watchers   float64 `json:"subscribers_count"`
-	Size       float64 `json:"size"`
-}
+// // github.Repository is used to store data from all the relevant endpoints in the API
+// type github.Repository struct {
+// 	Name  string `json:"name"`
+// 	Owner struct {
+// 		Login string `json:"login"`
+// 	} `json:"owner"`
+// 	License struct {
+// 		Key string `json:"key"`
+// 	} `json:"license"`
+// 	Language   string  `json:"language"`
+// 	Archived   bool    `json:"archived"`
+// 	Private    bool    `json:"private"`
+// 	Fork       bool    `json:"fork"`
+// 	Forks      float64 `json:"forks"`
+// 	Stars      float64 `json:"stargazers_count"`
+// 	OpenIssues float64 `json:"open_issues"`
+// 	Watchers   float64 `json:"subscribers_count"`
+// 	Size       float64 `json:"size"`
+// }
 
 // RateLimits is used to store rate limit data into a struct
 // This data is later represented as a metric, captured at the end of a scrape

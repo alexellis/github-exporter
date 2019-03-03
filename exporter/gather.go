@@ -1,40 +1,52 @@
 package exporter
 
 import (
-	"encoding/json"
+	"context"
 	"fmt"
+	"net/http"
 	"strconv"
+
+	"github.com/google/go-github/github"
+	"golang.org/x/oauth2"
 
 	log "github.com/sirupsen/logrus"
 )
 
 // gatherData - Collects the data from the API and stores into struct
-func (e *Exporter) gatherData() ([]*RepoInfo, *RateLimits, error) {
+func (e *Exporter) gatherData() ([]*github.Repository, *RateLimits, error) {
 
-	data := []*RepoInfo{}
+	data := []*github.Repository{}
 
-	responses, err := queryAPI(e.TargetURLs, e.APIToken)
+	tokenSource := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: e.APIToken},
+	)
+
+	tokenClient := oauth2.NewClient(context.Background(), tokenSource)
+
+	client := github.NewClient(tokenClient)
+
+	data, err := queryGitHub(client, e.TargetRepos)
 
 	if err != nil {
 		return data, nil, err
 	}
 
-	for _, response := range responses {
+	// for _, response := range responses {
 
-		// Github can at times present an array, or an object for the same data set.
-		// This code checks handles this variation.
-		if isArray(response.body) {
-			ds := []*RepoInfo{}
-			json.Unmarshal(response.body, &ds)
-			data = append(data, ds...)
-		} else {
-			d := new(RepoInfo)
-			json.Unmarshal(response.body, &d)
-			data = append(data, d)
-		}
+	// 	// Github can at times present an array, or an object for the same data set.
+	// 	// This code checks handles this variation.
+	// 	if isArray(response.body) {
+	// 		ds := []*github.Repository{}
+	// 		json.Unmarshal(response.body, &ds)
+	// 		data = append(data, ds...)
+	// 	} else {
+	// 		d := new(github.Repository)
+	// 		json.Unmarshal(response.body, &d)
+	// 		data = append(data, d)
+	// 	}
 
-		log.Infof("API data fetched for repository: %s", response.url)
-	}
+	// 	log.Infof("API data fetched for repository: %s", response.url)
+	// }
 
 	// Check the API rate data and store as a metric
 	rates, err := getRates(e.APIURL, e.APIToken)
@@ -46,6 +58,36 @@ func (e *Exporter) gatherData() ([]*RepoInfo, *RateLimits, error) {
 	//return data, rates, err
 	return data, rates, nil
 
+}
+
+func queryGitHub(client *github.Client, repoMap map[string][]string) ([]*github.Repository, error) {
+	infos := []*github.Repository{}
+
+	for owner, repoList := range repoMap {
+
+		for _, repo := range repoList {
+			if repo == "*" {
+				listRepoOptions := &github.RepositoryListOptions{
+					ListOptions: github.ListOptions{
+						PerPage: 100,
+						Page:    0,
+					},
+				}
+
+				repoDatas, response, err := client.Repositories.List(context.Background(), owner, listRepoOptions)
+
+				if err != nil {
+					return infos, err
+				}
+				if response.StatusCode != http.StatusOK {
+					return infos, fmt.Errorf("HTTP status unexpected: %d for %s/%s", response.StatusCode, owner, repo)
+				}
+				infos = append(infos, repoDatas...)
+			}
+		}
+	}
+
+	return infos, nil
 }
 
 // getRates obtains the rate limit data for requests against the github API.
