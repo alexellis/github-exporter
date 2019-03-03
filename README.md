@@ -2,7 +2,13 @@
 
 Exposes basic metrics for your repositories from the GitHub API, to a Prometheus compatible endpoint.
 
-## Configuration
+## Status
+
+This exporter was forked from: https://github.com/infinityworks/github-exporter - help is wanted to fill in the gaps and community requests of the upstream project.
+
+This is a friendly, helpful soft fork of the work of @rucknar. 
+
+## Setup
 
 This exporter is setup to take input from environment variables:
 
@@ -23,7 +29,7 @@ At least one of those 3 options should be provided.
 * `LOG_LEVEL` The level of logging the exporter will run with, defaults to `debug`
 
 
-## Install and deploy
+### Install and deploy
 
 Run manually from Docker Hub:
 ```
@@ -36,7 +42,7 @@ docker build -t <image-name> .
 docker run -d --restart=always -p 9171:9171 -e REPOS="infinityworks/ranch-eye, infinityworks/prom-conf" <image-name>
 ```
 
-## Docker compose
+### Docker compose
 
 ```
 github-exporter:
@@ -58,5 +64,56 @@ github-exporter:
 Metrics will be made available on port 9171 by default
 An example of these metrics can be found in the `METRICS.md` markdown file in the root of this repository
 
-## Metadata
-[![](https://images.microbadger.com/badges/image/alexellis/github-exporter.svg)](http://microbadger.com/images/alexellis/github-exporter "Get your own image badge on microbadger.com") [![](https://images.microbadger.com/badges/version/alexellis/github-exporter.svg)](http://microbadger.com/images/alexellis/github-exporter "Get your own version badge on microbadger.com")
+## Contributing
+
+### Procedure
+
+* Propose change via an Issue
+* Wait for approval from maintainer
+* Sign off every commit with `git commit -s` as part of the [Developer Certificate of Origin](https://developercertificate.org/).
+
+```
+
+
+Developer Certificate of Origin
+Version 1.1
+
+Copyright (C) 2004, 2006 The Linux Foundation and its contributors.
+1 Letterman Drive
+Suite D4700
+San Francisco, CA, 94129
+
+Everyone is permitted to copy and distribute verbatim copies of this
+license document, but changing it is not allowed.
+
+
+Developer's Certificate of Origin 1.1
+
+By making a contribution to this project, I certify that:
+
+(a) The contribution was created in whole or in part by me and I
+    have the right to submit it under the open source license
+    indicated in the file; or
+
+(b) The contribution is based upon previous work that, to the best
+    of my knowledge, is covered under an appropriate open source
+    license and I have the right under that license to submit that
+    work with modifications, whether created in whole or in part
+    by me, under the same open source license (unless I am
+    permitted to submit under a different license), as indicated
+    in the file; or
+
+(c) The contribution was provided directly to me by some other
+    person who certified (a), (b) or (c) and I have not modified
+    it.
+
+(d) I understand and agree that this project and the contribution
+    are public and that a record of the contribution (including all
+    personal information I submit with it, including my sign-off) is
+    maintained indefinitely and may be redistributed consistent with
+    this project or the open source license(s) involved.
+```
+
+### License
+
+MIT
