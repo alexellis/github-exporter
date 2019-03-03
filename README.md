@@ -32,19 +32,21 @@ At least one of those 3 options should be provided.
 ### Install and deploy
 
 Run manually from Docker Hub:
-```
-docker run -d --restart=always -p 9171:9171 -e REPOS="infinityworks/ranch-eye, infinityworks/prom-conf" alexellis/github-exporter
+
+```sh
+docker run -d --restart=always -p 9171:9171 -e REPOS="infinityworks/ranch-eye, infinityworks/prom-conf" alexellis/github-exporter:0.1.0
 ```
 
 Build a docker image:
-```
+
+```sh
 docker build -t <image-name> .
 docker run -d --restart=always -p 9171:9171 -e REPOS="infinityworks/ranch-eye, infinityworks/prom-conf" <image-name>
 ```
 
 ### Docker compose
 
-```
+```yaml
 github-exporter:
     tty: true
     stdin_open: true
@@ -52,7 +54,7 @@ github-exporter:
       - 9171
     ports:
       - 9171:9171
-    image: alexellis/github-exporter:latest
+    image: alexellis/github-exporter:0.1.0
     environment:
       - REPOS=<REPOS you want to monitor>
       - GITHUB_TOKEN=<your github api token>
@@ -73,8 +75,6 @@ An example of these metrics can be found in the `METRICS.md` markdown file in th
 * Sign off every commit with `git commit -s` as part of the [Developer Certificate of Origin](https://developercertificate.org/).
 
 ```
-
-
 Developer Certificate of Origin
 Version 1.1
 
